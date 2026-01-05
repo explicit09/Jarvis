@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <defs>
+    <radialGradient id="core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00d4ff;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#0088aa;stop-opacity:0" />
+    </radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#00d4ff;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:0" />
+    </radialGradient>
+    <filter id="blur">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+    </filter>
+  </defs>
+
+  <!-- Outer glow -->
+  <circle cx="128" cy="128" r="100" fill="url(#glow)" filter="url(#blur)" />
+
+  <!-- Outer ring -->
+  <circle cx="128" cy="128" r="80" fill="none" stroke="#00d4ff" stroke-width="2" opacity="0.6" />
+
+  <!-- Middle ring -->
+  <circle cx="128" cy="128" r="60" fill="none" stroke="#00d4ff" stroke-width="3" opacity="0.8" />
+
+  <!-- Inner ring -->
+  <circle cx="128" cy="128" r="40" fill="none" stroke="#00ffff" stroke-width="4" />
+
+  <!-- Core -->
+  <circle cx="128" cy="128" r="25" fill="url(#core)" />
+
+  <!-- Center dot -->
+  <circle cx="128" cy="128" r="8" fill="#ffffff" opacity="0.9" />
+
+  <!-- Arc segments -->
+  <g stroke="#00d4ff" stroke-width="3" fill="none" opacity="0.7">
+    <path d="M 128 48 A 80 80 0 0 1 208 128" />
+    <path d="M 208 128 A 80 80 0 0 1 128 208" />
+    <path d="M 128 208 A 80 80 0 0 1 48 128" />
+    <path d="M 48 128 A 80 80 0 0 1 128 48" />
+  </g>
+</svg>
