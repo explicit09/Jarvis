@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.local
+*.local
+
+# Node
+node_modules/
+npm-debug.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Build outputs
+jarvis-ui/dist/
+jarvis-ui/dist-electron/
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+*.onnx
+*.tflite
