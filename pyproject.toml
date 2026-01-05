@@ -1,0 +1,69 @@
+[project]
+name = "jarvis"
+version = "0.1.0"
+description = "J.A.R.V.I.S - Low-latency Voice AI Assistant"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "livekit-agents>=1.0.0",
+    "livekit-plugins-deepgram>=1.0.0",
+    "livekit-plugins-silero>=1.0.0",
+    "livekit-plugins-openai>=1.0.0",
+    "livekit-plugins-elevenlabs>=1.0.0",
+    "anthropic>=0.40.0",
+    "pvporcupine>=3.0.0",
+    "faster-whisper>=1.0.0",
+    "python-dotenv>=1.0.0",
+    "httpx>=0.27.0",
+    "sounddevice>=0.5.0",
+    "numpy>=1.26.0",
+    "pytz>=2024.1",
+    "twilio>=9.0.0",
+    "msal>=1.28.0",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.34.0",
+    "ddgs>=7.0.0",
+    "ytmusicapi>=0.26.0",
+    "openwakeword>=0.6.0",
+    # HTTP API and streaming
+    "websockets>=12.0",
+    "webrtcvad>=2.0.10",
+    "prometheus-client>=0.21.0",
+    "redis>=5.0.0",
+    "openai>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.24.0",
+    "ruff>=0.8.0",
+]
+ui-macos = [
+    "rumps>=0.4.0",
+]
+
+[project.scripts]
+jarvis = "jarvis.main:main"
+jarvis-text = "jarvis.text_mode:main"
+jarvis-standalone = "jarvis.standalone:main"
+jarvis-server = "jarvis.server.app:main"
+jarvis-ui = "jarvis.ui.server:main"
+jarvis-tray = "jarvis.ui.tray_macos:main"
+jarvis-bench = "jarvis.bench.runner:main"
+jarvis-bench-report = "jarvis.bench.report:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
