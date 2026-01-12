@@ -12,9 +12,11 @@ import { DateTimePanel } from './components/widgets/DateTimePanel'
 import { WeatherPanel } from './components/widgets/WeatherPanel'
 import { SystemMetrics } from './components/widgets/SystemMetrics'
 import { MusicPanel } from './components/widgets/MusicPanel'
+import { TitleBar } from './components/electron/TitleBar'
 import { useJarvisAPI } from './hooks/useJarvisAPI'
 import { useTTS } from './hooks/useTTS'
 import { useVoiceWebSocket } from './hooks/useVoiceWebSocket'
+import { useElectron } from './hooks/useElectron'
 import { useConversationStore } from './stores/conversationStore'
 import { useVoiceStore } from './stores/voiceStore'
 
@@ -23,6 +25,7 @@ export default function App() {
   const { isLoading } = useConversationStore()
   const { state: voiceState } = useVoiceStore()
   const { speak } = useTTS()
+  const { isElectron } = useElectron()
   const [voiceEnabled, setVoiceEnabled] = useState(false)
 
   // WebSocket voice streaming (handles wake word + STT + TTS on server)
@@ -87,6 +90,9 @@ export default function App() {
 
   return (
     <MainLayout>
+      {/* Electron title bar (Windows/Linux only) */}
+      {isElectron && <TitleBar />}
+
       {/* Background effects */}
       <HexGrid />
 
@@ -204,7 +210,7 @@ export default function App() {
         <div className="h-full flex items-center justify-center gap-8 text-xs font-mono text-jarvis-text-muted">
           <span>JARVIS v2.0</span>
           <span className="text-jarvis-primary">|</span>
-          <span>EXPLICIT</span>
+          <span>{isElectron ? 'DESKTOP' : 'WEB'}</span>
           <span className="text-jarvis-primary">|</span>
           <span>{isConnected ? 'VOICE CONNECTED' : 'AI ASSISTANT ONLINE'}</span>
         </div>
