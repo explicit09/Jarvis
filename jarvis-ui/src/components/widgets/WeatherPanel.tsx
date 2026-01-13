@@ -11,6 +11,17 @@ interface WeatherData {
   forecast: { day: string; high: number; low: number; icon: string }[]
 }
 
+const DEFAULT_LOCATION = 'Ames, Iowa'
+
+function mapConditionToIcon(condition: string): string {
+  const lower = condition.toLowerCase()
+  if (lower.includes('rain') || lower.includes('drizzle') || lower.includes('shower')) return 'rainy'
+  if (lower.includes('cloud') || lower.includes('overcast')) return 'cloudy'
+  return 'sunny'
+}
+
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
 // Weather condition icons (SVG paths)
 const WeatherIcons: Record<string, JSX.Element> = {
   sunny: (
@@ -34,25 +45,61 @@ const WeatherIcons: Record<string, JSX.Element> = {
 }
 
 export function WeatherPanel() {
-  const [weather] = useState<WeatherData>({
-    temp: 72,
-    condition: 'Fair',
-    humidity: 45,
-    wind: 8,
-    feelsLike: 70,
-    location: 'Los Angeles, CA',
-    forecast: [
-      { day: 'Today', high: 75, low: 62, icon: 'sunny' },
-      { day: 'Tomorrow', high: 73, low: 60, icon: 'cloudy' },
-      { day: 'Wed', high: 68, low: 55, icon: 'rainy' },
-      { day: 'Thu', high: 70, low: 58, icon: 'sunny' },
-      { day: 'Fri', high: 72, low: 60, icon: 'sunny' },
-    ],
+  const [weather, setWeather] = useState<WeatherData>({
+    temp: 0,
+    condition: 'Loading...',
+    humidity: 0,
+    wind: 0,
+    feelsLike: 0,
+    location: DEFAULT_LOCATION,
+    forecast: [],
   })
+  const [, setLoading] = useState(true)
 
-  // In a real app, fetch weather from API
+  // Fetch real weather from wttr.in
   useEffect(() => {
-    // Could call your jarvis weather tool here
+    async function fetchWeather() {
+      try {
+        const response = await fetch(
+          `https://wttr.in/${encodeURIComponent(DEFAULT_LOCATION)}?format=j1`
+        )
+        const data = await response.json()
+
+        const current = data.current_condition[0]
+        const area = data.nearest_area[0]
+        const forecasts = data.weather || []
+
+        const today = new Date()
+
+        setWeather({
+          temp: parseInt(current.temp_F),
+          condition: current.weatherDesc[0].value,
+          humidity: parseInt(current.humidity),
+          wind: parseInt(current.windspeedMiles),
+          feelsLike: parseInt(current.FeelsLikeF),
+          location: `${area.areaName[0].value}, ${area.region[0].value}`,
+          forecast: forecasts.slice(0, 5).map((day: { maxtempF: string; mintempF: string; hourly: { weatherDesc: { value: string }[] }[] }, i: number) => {
+            const date = new Date(today)
+            date.setDate(date.getDate() + i)
+            return {
+              day: i === 0 ? 'Today' : DAYS[date.getDay()],
+              high: parseInt(day.maxtempF),
+              low: parseInt(day.mintempF),
+              icon: mapConditionToIcon(day.hourly[4]?.weatherDesc[0]?.value || 'sunny'),
+            }
+          }),
+        })
+      } catch (error) {
+        console.error('Weather fetch error:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchWeather()
+    // Refresh every 30 minutes
+    const interval = setInterval(fetchWeather, 30 * 60 * 1000)
+    return () => clearInterval(interval)
   }, [])
 
   return (
@@ -71,7 +118,7 @@ export function WeatherPanel() {
       {/* Current weather */}
       <div className="flex items-center gap-4 mb-4">
         <div className="w-16 h-16 text-jarvis-primary">
-          {WeatherIcons.sunny}
+          {WeatherIcons[mapConditionToIcon(weather.condition)] || WeatherIcons.sunny}
         </div>
         <div>
           <div className="text-4xl font-display text-jarvis-primary">
