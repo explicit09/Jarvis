@@ -2,14 +2,19 @@ const { app, BrowserWindow, ipcMain, Menu, Tray, nativeImage } = require('electr
 const path = require('path')
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) {
-  app.quit()
+try {
+  if (require('electron-squirrel-startup')) {
+    app.quit()
+  }
+} catch (e) {
+  // electron-squirrel-startup not installed, ignore
 }
 
 let mainWindow = null
 let tray = null
 
-const isDev = process.env.NODE_ENV === 'development' || !app.isPackaged
+// Use dev server only if explicitly set and server is running
+const isDev = process.env.ELECTRON_DEV === 'true'
 
 function createWindow() {
   // Create the browser window with Iron Man JARVIS styling
@@ -28,7 +33,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.cjs'),
     },
     icon: path.join(__dirname, '../public/icons/icon.png'),
   })

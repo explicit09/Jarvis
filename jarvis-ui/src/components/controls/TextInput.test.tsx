@@ -116,7 +116,6 @@ describe('TextInput', () => {
 
   it('does not send when disabled', async () => {
     render(<TextInput onSend={mockOnSend} disabled />)
-    const user = userEvent.setup()
 
     const input = screen.getByPlaceholderText('Type a command...')
     // Using fireEvent since userEvent respects disabled state
